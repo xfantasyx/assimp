@@ -967,7 +967,7 @@ IF (ASSIMP_BUILD_USD_IMPORTER)
             GIT_TAG        ${TINYUSDZ_GIT_TAG}
             PATCH_COMMAND  ${TINYUSDZ_PATCH_CMD}
     )
-    FetchContent_MakeAvailable(tinyusdz_repo)
+    # FetchContent_MakeAvailable(tinyusdz_repo)
     message("**** Finished cloning tinyusdz repo")
     message("****")
 
