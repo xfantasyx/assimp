@@ -1635,7 +1635,9 @@ void glTF2Exporter::ExportAnimations() {
 
     for (unsigned int i = 0; i < mScene->mNumAnimations; ++i) {
         const aiAnimation *anim = mScene->mAnimations[i];
-        const float ticksPerSecond = static_cast<float>(anim->mTicksPerSecond);
+        float ticksPerSecond = static_cast<float>(anim->mTicksPerSecond);
+        if(ticksPerSecond <= 0.000001f)
+            ticksPerSecond = 1.0f;
 
         std::string nameAnim = "anim";
         if (anim->mName.length > 0) {
