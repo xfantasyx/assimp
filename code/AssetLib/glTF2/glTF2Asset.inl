@@ -543,10 +543,10 @@ Ref<T> LazyDict<T>::Add(T *obj) {
 
 template <class T>
 Ref<T> LazyDict<T>::Create(const char *id) {
-    Asset::IdMap::iterator it = mAsset.mUsedIds.find(id);
-    if (it != mAsset.mUsedIds.end()) {
-        throw DeadlyImportError("GLTF: two objects with the same ID exist");
-    }
+    //Asset::IdMap::iterator it = mAsset.mUsedIds.find(id);
+    //if (it != mAsset.mUsedIds.end()) {
+    //    throw DeadlyImportError("GLTF: two objects with the same ID exist");
+    //}
     T *inst = new T();
     unsigned int idx = unsigned(mObjs.size());
     inst->id = id;
