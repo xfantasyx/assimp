@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2024, assimp team
+Copyright (c) 2006-2025, assimp team
 
 All rights reserved.
 
@@ -86,7 +86,8 @@ public:
 	AMFNodeElementBase *Parent; ///< Parent element. If nullptr then this node is root.
 	std::list<AMFNodeElementBase *> Child; ///< Child elements.
 
-public: /// Destructor, virtual..
+public:
+	/// Destructor, virtual..
 	virtual ~AMFNodeElementBase() = default;
 
 	/// Disabled copy constructor and co.
@@ -97,16 +98,16 @@ public: /// Destructor, virtual..
 
 protected:
 	/// In constructor inheritor must set element type.
-	/// \param [in] pType - element type.
+	/// \param [in] type - element type.
 	/// \param [in] pParent - parent element.
-	AMFNodeElementBase(const EType pType, AMFNodeElementBase *pParent) :
-			Type(pType), Parent(pParent) {
+	AMFNodeElementBase(EType type, AMFNodeElementBase *pParent) :
+			Type(type), Parent(pParent) {
 		// empty
 	}
 }; // class IAMFImporter_NodeElement
 
 /// A collection of objects or constellations with specific relative locations.
-struct AMFConstellation : public AMFNodeElementBase {
+struct AMFConstellation final : public AMFNodeElementBase {
 	/// Constructor.
 	/// \param [in] pParent - pointer to parent node.
 	AMFConstellation(AMFNodeElementBase *pParent) :
@@ -115,7 +116,7 @@ struct AMFConstellation : public AMFNodeElementBase {
 }; // struct CAMFImporter_NodeElement_Constellation
 
 /// Part of constellation.
-struct AMFInstance : public AMFNodeElementBase {
+struct AMFInstance final : public AMFNodeElementBase {
 
 	std::string ObjectID; ///< ID of object for instantiation.
 	/// \var Delta - The distance of translation in the x, y, or z direction, respectively, in the referenced object's coordinate system, to
@@ -135,8 +136,8 @@ struct AMFInstance : public AMFNodeElementBase {
 /// Structure that define metadata node.
 struct AMFMetadata : public AMFNodeElementBase {
 
-	std::string Type; ///< Type of "Value".
-	std::string Value; ///< Value.
+	std::string MetaType; ///< Type of "Value".
+	std::string Value;    ///< Value.
 
 	/// Constructor.
 	/// \param [in] pParent - pointer to parent node.
@@ -225,7 +226,7 @@ struct AMFVertices : public AMFNodeElementBase {
 /// Structure that define volume node.
 struct AMFVolume : public AMFNodeElementBase {
 	std::string MaterialID; ///< Which material to use.
-	std::string Type; ///< What this volume describes can be "region" or "support". If none specified, "object" is assumed.
+	std::string VolumeType; ///< What this volume describes can be "region" or "support". If none specified, "object" is assumed.
 
 	/// Constructor.
 	/// \param [in] pParent - pointer to parent node.

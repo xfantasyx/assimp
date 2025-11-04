@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2024, assimp team
+Copyright (c) 2006-2025, assimp team
 
 All rights reserved.
 
@@ -44,6 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef ASSIMP_BUILD_NO_GLTF_IMPORTER
 
 #include <assimp/Exceptional.h>
+#include <assimp/DefaultLogger.hpp>
 
 #include <algorithm>
 #include <list>
@@ -346,6 +347,21 @@ struct ReadHelper<int64_t> {
     }
 };
 
+#ifdef __APPLE__
+
+// On Mac size_t and uint64_t are not the same, so we need a specialized version
+// here to properly parse byteOffset and other parameters > 2^31
+// On Windows and Linux the types match andno additional specialization is required
+
+template <>
+struct ReadHelper<size_t> {
+    static bool Read(Value &val, size_t &out) {
+        return val.IsInt64() ? out = val.GetInt64(), true : false;
+    }
+};
+
+#endif
+
 template <class T>
 inline static bool ReadValue(Value &val, T &out) {
     return ReadHelper<T>::Read(val, out);
@@ -444,7 +460,7 @@ inline Value *FindArrayInContext(Value &val, const char *memberId, const char *c
     return &it->value;
 }
 
-inline Value *FindObjectInContext(Value &val, const char *memberId, const char *context, const char *extraContext = nullptr) {
+inline Value *FindObjectInContext(Value &val, const char * memberId, const char *context, const char *extraContext = nullptr) {
     if (!val.IsObject()) {
         return nullptr;
     }
@@ -453,8 +469,9 @@ inline Value *FindObjectInContext(Value &val, const char *memberId, const char *
         return nullptr;
     }
     if (!it->value.IsObject()) {
-        throwUnexpectedTypeError("object", memberId, context, extraContext);
-    }
+        ASSIMP_LOG_ERROR("Member \"", memberId, "\" was not of type \"", context, "\" when reading ", extraContext);
+        return nullptr;
+   }
     return &it->value;
 }
 
